@@ -1,19 +1,21 @@
-import math
-import time
+#.___________. __   _______  __       __  ___   ___  __  .______      
+#|           ||  | |   ____||  |     |  | \  \ /  / |  | |   _  \     
+#`---|  |----`|  | |  |__   |  |     |  |  \  V  /  |  | |  |_)  |    
+#    |  |     |  | |   __|  |  |     |  |   >   <   |  | |      /     
+#    |  |     |  | |  |____ |  `----.|  |  /  .  \  |  | |  |\  \----.
+#    |__|     |__| |_______||_______||__| /__/ \__\ |__| | _| `._____|
 
-grid_size=9
+
+
+
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import time
+import random
+
+grid_size=25
 running=True
-grid=[
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ]
+grid = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
 #grid Row, Column
 def getValue(x,y):
     return(grid[y][x])
@@ -43,19 +45,18 @@ def emptyGrid(g):
         for y in x:
             s+=y
     return(s)
-setValue(2,4,1)
-setValue(3,4,1)
-setValue(4,4,1)
-setValue(4,3,1)
-setValue(3,2,1)
+
+#Test vals
+
+for i in range(200):
+    setValue(random.randint(1,24),random.randint(1,24),1)
 
 
 
-print('Tick 0'+str(grid))
 
 #Game Loop:
 def tick():
-    global grid
+    global grid, running
     gridTemp = [row[:] for row in grid]
     
     for y in range(grid_size):
@@ -75,8 +76,22 @@ def tick():
             
 
 
+
+
+# ---- Matplotlib Animation ----
+fig, ax = plt.subplots()
+img = ax.imshow(grid, cmap="binary")
+ax.axis("off")
+
+def update(frame):
+    tick()
+    img.set_data(grid)
+    return [img]
+
+ani = animation.FuncAnimation(fig, update, frames=200, interval=200, blit=True)
+
 while running:
-    showGrid(grid)
+    plt.show()
     time.sleep(1)
     tick()
-
+    
